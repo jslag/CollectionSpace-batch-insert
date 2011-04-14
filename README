@@ -4,3 +4,11 @@ CollectionSpace instance (http://collectionspace.org/) via its REST API
 (see
 http://wiki.collectionspace.org/display/collectionspace/Common+Services+REST+API+documentation
 for details).
+
+Running the code involves three steps:
+1. Configuring the values in cspace_constants.py
+2. Running save_list_of_cs_objects.py to generate a local listing of
+   what objects are already in your CollectionSpace installation, which
+   should prevent the insertion of duplicates
+3. Running create_cspace_records.py to pull records from your OAI source
+   and insert their data into your CollectionSpace instance.
