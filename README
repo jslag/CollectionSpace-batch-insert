@@ -1,0 +1,2 @@
+A rudimenatry tool for pulling collection records from a CDWAlite source
+and inserting them into CollectionSpace via its REST API.
