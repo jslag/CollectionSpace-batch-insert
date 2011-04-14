@@ -1,2 +1,6 @@
-A rudimenatry tool for pulling collection records from a CDWAlite source
-and inserting them into CollectionSpace via its REST API.
+A rudimentary tool for pulling collection records from a CDWAlite source
+(eg. http://collections.walkerart.org/oai/) and inserting them into a
+CollectionSpace instance (http://collectionspace.org/) via its REST API
+(see
+http://wiki.collectionspace.org/display/collectionspace/Common+Services+REST+API+documentation
+for details).
