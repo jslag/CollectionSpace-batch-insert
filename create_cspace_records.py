@@ -84,11 +84,6 @@ def create_cspace_record(record, resume_token, existing_records):
 
     h = httplib2.Http()
     h.add_credentials(CSPACE_USER, CSPACE_PASS)
-    resp, content = h.request(
-      CSPACE_URL + 'collectionobjects/?kw=%s' % object_values['workID'],
-      'GET',
-      headers = {'Content-Type': 'application/xml'}
-      )
 
     #
     # TODO these lines suggest that we might want to handle possibly
@@ -102,45 +97,50 @@ def create_cspace_record(record, resume_token, existing_records):
     #
     # Schema is at https://source.collectionspace.org/collection-space/src/services/tags/v1.5/services/collectionobject/jaxb/src/main/resources/collectionobjects_common.xsd
     #
+    # updated to account for
+    # http://wiki.collectionspace.org/display/collectionspace/Imports+Service+Home
+    #     
     object_xml = u'''
-    <document name="collectionobjects">
-      <ns2:collectionobjects_common xmlns:ns2="http://collectionspace.org/services/collectionobject">
-        <objectNumber>%s</objectNumber>
-        <titleGroupList>
-            <titleGroup>
-                <title>%s</title>
-                <titleLanguage>eng</titleLanguage>
-            </titleGroup>
-        </titleGroupList>
-        <objectProductionDates>
-          <objectProductionDate>%s</objectProductionDate>
-        </objectProductionDates>
-        <materialGroupList>
-          <materialGroup>
-            <material>%s</material>
-          </materialGroup>
-        </materialGroupList>
-        <contentConcepts>
-          %s
-        </contentConcepts>
-        <objectNameList>
-          <objectNameGroup>
-            <objectName>%s</objectName>
-            <objectNameCurrency>current</objectNameCurrency>
-            <objectNameType>classified</objectNameType>
-            <objectNameSystem>In-house</objectNameSystem>
-            <objectNameLanguage>eng</objectNameLanguage>
-          </objectNameGroup>
-        </objectNameList>
-        <physicalDescription>%s</physicalDescription>
-        <editionNumber>%s</editionNumber>
-        <dimensionSummary>%s</dimensionSummary>
-        <inscriptionContent>%s</inscriptionContent>
-        <owners>
-          <owner>%s</owner>
-        </owners>
-      </ns2:collectionobjects_common>
-    </document>
+    <imports>
+      <import seq="1" service="CollectionObjects" type="CollectionObject">
+        <schema xmlns:collectionobjects_common="http://collectionspace.org/collectionobject/" name="collectionobjects_common">
+          <collectionobjects_common:objectNumber>%s</collectionobjects_common:objectNumber>
+          <collectionobjects_common:titleGroupList>
+              <collectionobjects_common:titleGroup>
+                  <collectionobjects_common:title>%s</collectionobjects_common:title>
+                  <collectionobjects_common:titleLanguage>eng</collectionobjects_common:titleLanguage>
+              </collectionobjects_common:titleGroup>
+          </collectionobjects_common:titleGroupList>
+          <collectionobjects_common:objectProductionDates>
+            <collectionobjects_common:objectProductionDate>%s</collectionobjects_common:objectProductionDate>
+          </collectionobjects_common:objectProductionDates>
+          <collectionobjects_common:materialGroupList>
+            <collectionobjects_common:materialGroup>
+              <collectionobjects_common:material>%s</collectionobjects_common:material>
+            </collectionobjects_common:materialGroup>
+          </collectionobjects_common:materialGroupList>
+          <collectionobjects_common:contentConcepts>
+            %s
+          </collectionobjects_common:contentConcepts>
+          <collectionobjects_common:objectNameList>
+            <collectionobjects_common:objectNameGroup>
+              <collectionobjects_common:objectName>%s</collectionobjects_common:objectName>
+              <collectionobjects_common:objectNameCurrency>current</collectionobjects_common:objectNameCurrency>
+              <collectionobjects_common:objectNameType>classified</collectionobjects_common:objectNameType>
+              <collectionobjects_common:objectNameSystem>In-house</collectionobjects_common:objectNameSystem>
+              <collectionobjects_common:objectNameLanguage>eng</collectionobjects_common:objectNameLanguage>
+            </collectionobjects_common:objectNameGroup>
+          </collectionobjects_common:objectNameList>
+          <collectionobjects_common:physicalDescription>%s</collectionobjects_common:physicalDescription>
+          <collectionobjects_common:editionNumber>%s</collectionobjects_common:editionNumber>
+          <collectionobjects_common:dimensionSummary>%s</collectionobjects_common:dimensionSummary>
+          <collectionobjects_common:inscriptionContent>%s</collectionobjects_common:inscriptionContent>
+          <collectionobjects_common:owners>
+            <collectionobjects_common:owner>%s</collectionobjects_common:owner>
+          </collectionobjects_common:owners>
+        </schema>
+      </import>
+    </imports>
     ''' % (object_values['workID'], 
            object_values['title'],
            object_values['displayCreationDate'],
@@ -155,13 +155,13 @@ def create_cspace_record(record, resume_token, existing_records):
            )
 
     resp, content = h.request(
-      CSPACE_URL + 'collectionobjects',
+      CSPACE_URL + 'imports',
       'POST',
       body = object_xml.encode('utf-8'),
       headers = {'Content-Type': 'application/xml'}
       )
 
-    if resp['status'] == '201':
+    if resp['status'] == '200':
       if object_values['title'] is None:
         print "Inserted '%s' into collectionspace\n" % object_values['workID'].encode('utf-8')
       else:
@@ -219,6 +219,7 @@ if __name__ == "__main__":
       )
     resume_token, records_created = parse_oai(content, existing_records)
     total_records_created += records_created
+
     if resume_token is None:
       break
 
