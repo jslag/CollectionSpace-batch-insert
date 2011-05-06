@@ -82,9 +82,6 @@ def create_cspace_record(record, resume_token, existing_records):
       print "CollectionSpace already has %s, skipping." % object_values['workID']
       return 0
 
-    h = httplib2.Http()
-    h.add_credentials(CSPACE_USER, CSPACE_PASS)
-
     #
     # TODO these lines suggest that we might want to handle possibly
     # repeating values a little more intelligently, if we end up
@@ -154,6 +151,8 @@ def create_cspace_record(record, resume_token, existing_records):
            object_values['locationName'], 
            )
 
+    h = httplib2.Http()
+    h.add_credentials(CSPACE_USER, CSPACE_PASS)
     resp, content = h.request(
       CSPACE_URL + 'imports',
       'POST',
