@@ -108,9 +108,9 @@ def create_cspace_record(record, resume_token, existing_records):
                   <collectionobjects_common:titleLanguage>eng</collectionobjects_common:titleLanguage>
               </collectionobjects_common:titleGroup>
           </collectionobjects_common:titleGroupList>
-          <collectionobjects_common:objectProductionDates>
-            <collectionobjects_common:objectProductionDate>%s</collectionobjects_common:objectProductionDate>
-          </collectionobjects_common:objectProductionDates>
+          <collectionobjects_common:objectProductionDateGroup>
+            <collectionobjects_common:dateDisplayDate>%s</collectionobjects_common:dateDisplayDate>
+          </collectionobjects_common:objectProductionDateGroup>
           <collectionobjects_common:materialGroupList>
             <collectionobjects_common:materialGroup>
               <collectionobjects_common:material>%s</collectionobjects_common:material>
