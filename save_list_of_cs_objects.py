@@ -32,4 +32,4 @@ if __name__ == "__main__":
   pickle.dump(cobjects, output)
   output.close()
 
-
+  print "Objects dumped.\n"
